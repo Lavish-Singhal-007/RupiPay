@@ -151,4 +151,27 @@ router.put("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/bulk", authMiddleware, async (req, res) => {
+  try {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+      $or: [
+        { firstName: { $regex: filter, $options: "i" } },
+        { lastName: { $regex: filter, $options: "i" } },
+      ],
+      _id: { $ne: req.userId },
+    }).select("firstName lastName _id");
+
+    return res.status(200).json({
+      users,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
 module.exports = router;
