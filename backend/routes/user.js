@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const { User, Account } = require("../db");
-const authMiddleware = require("../middleware");
+const { authMiddleware } = require("../middleware");
 const bcrypt = require("bcrypt");
 
 // Zod schema

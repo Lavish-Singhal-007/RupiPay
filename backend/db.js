@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const { MONGO_URI } = require("./config");
 
-mongoose.connect("mongodb://localhost:27017/paytm");
+mongoose.connect(MONGO_URI);
 
 const userSchema = new mongoose.Schema(
   {
