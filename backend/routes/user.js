@@ -3,7 +3,7 @@ const { z } = require("zod");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
-const { User } = require("../db");
+const { User, Account } = require("../db");
 const authMiddleware = require("../middleware");
 const bcrypt = require("bcrypt");
 
@@ -42,6 +42,14 @@ router.post("/signup", async (req, res) => {
       password: hashedPassword,
     });
 
+    const randomBalance = Math.floor(Math.random() * 10000) + 1;
+    const balanceInPaise = randomBalance * 100;
+
+    await Account.create({
+      userId: user._id,
+      balance: balanceInPaise,
+    });
+
     const token = jwt.sign(
       {
         userId: user._id,
@@ -52,6 +60,7 @@ router.post("/signup", async (req, res) => {
     return res.status(201).json({
       message: "User created successfully",
       token,
+      startingBalance: randomBalance,
     });
   } catch (error) {
     console.log(error);
