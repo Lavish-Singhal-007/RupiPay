@@ -1,8 +1,11 @@
-export function Button({ label, onClick }) {
+export function Button({ label, onClick, disabled = false, className = "" }) {
   return (
     <button
       onClick={onClick}
-      className="w-full bg-black text-white p-2 rounded-lg"
+      disabled={disabled}
+      className={`w-full bg-green-600 text-white py-2.5 rounded-lg font-medium
+      hover:bg-green-700 transition disabled:bg-slate-400
+      disabled:cursor-not-allowed ${className}`}
     >
       {label}
     </button>

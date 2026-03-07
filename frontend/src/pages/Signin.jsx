@@ -8,56 +8,79 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function Signin() {
+export default function Signin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   async function sendRequest() {
-    const response = await axios.post(
-      "http://localhost:3000/api/v1/user/signin",
-      {
-        username,
-        password,
-      },
-    );
+    setError("");
+    setLoading(true);
 
-    localStorage.setItem("token", response.data.token);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/user/signin",
+        {
+          username,
+          password,
+        },
+      );
 
-    navigate("/dashboard");
+      localStorage.setItem("token", response.data.token);
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError("Invalid credentials");
+    }
+
+    setLoading(false);
   }
 
   return (
-    <div className="bg-slate-300 h-screen flex justify-center">
-      <div className="flex flex-col justify-center">
-        <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
-          <Heading label={"Sign in"} />
+    <div className="h-screen bg-[#EEF8F1] flex justify-center items-center">
+      <div className="bg-white w-96 p-8 rounded-2xl shadow-xl border border-slate-200">
+        <div className="flex justify-center mb-6">
+          <img src="/Logo.svg" alt="Rupi Pay" className="h-16 translate-x-6" />
+        </div>
 
-          <SubHeading label={"Enter your credentials to access your account"} />
+        <Heading label="Sign in" />
 
+        <SubHeading label="Enter your credentials to access your account" />
+
+        <div className="space-y-4">
           <InputBox
-            label={"Email"}
-            placeholder={"john@gmail.com"}
+            placeholder="Email"
             onChange={(e) => setUsername(e.target.value)}
           />
 
           <InputBox
-            label={"Password"}
-            placeholder={"123456"}
+            type="password"
+            placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
+        </div>
 
-          <div className="pt-4">
-            <Button label={"Sign in"} onClick={sendRequest} />
-          </div>
+        {error && (
+          <p className="text-red-500 text-sm text-center mt-4">{error}</p>
+        )}
 
-          <BottomWarning
-            label={"Don't have an account?"}
-            buttonText={"Sign up"}
-            to={"/signup"}
+        <div className="mt-6">
+          <Button
+            label={loading ? "Signing in..." : "Sign in"}
+            onClick={sendRequest}
+            disabled={!username || !password || loading}
           />
         </div>
+
+        <BottomWarning
+          label="Don't have an account?"
+          buttonText="Sign up"
+          to="/signup"
+        />
       </div>
     </div>
   );

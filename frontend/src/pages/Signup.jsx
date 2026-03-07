@@ -1,6 +1,12 @@
+import { Heading } from "../components/Heading";
+import { SubHeading } from "../components/SubHeading";
+import { InputBox } from "../components/InputBox";
+import { Button } from "../components/Button";
+import { BottomWarning } from "../components/BottomWarning";
+
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -69,38 +75,30 @@ export default function Signup() {
           <img src="/Logo.svg" alt="Rupi Pay" className="h-16 translate-x-6" />
         </div>
 
-        <h1 className="text-3xl font-bold text-center text-slate-800">
-          Create Account
-        </h1>
+        <Heading label="Create Account" />
 
-        <p className="text-center text-slate-500 mt-2 mb-6">
-          Start sending money instantly
-        </p>
+        <SubHeading label="Start sending money instantly" />
 
         <div className="space-y-4">
-          <input
-            onChange={(e) => setFirstName(e.target.value)}
+          <InputBox
             placeholder="First Name"
-            className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setFirstName(e.target.value)}
           />
 
-          <input
-            onChange={(e) => setLastName(e.target.value)}
+          <InputBox
             placeholder="Last Name"
-            className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setLastName(e.target.value)}
           />
 
-          <input
-            onChange={(e) => setUsername(e.target.value)}
+          <InputBox
             placeholder="Email"
-            className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setUsername(e.target.value)}
           />
 
-          <input
+          <InputBox
             type="password"
-            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
@@ -108,22 +106,21 @@ export default function Signup() {
           <p className="text-red-500 text-sm text-center mt-4">{error}</p>
         )}
 
-        <button
-          onClick={sendRequest}
-          disabled={
-            !firstName || !lastName || !username || !password || loading
-          }
-          className="w-full mt-6 bg-green-600 text-white py-2.5 rounded-lg font-medium hover:bg-green-700 transition disabled:bg-slate-400 disabled:cursor-not-allowed"
-        >
-          {loading ? "Creating account..." : "Sign Up"}
-        </button>
+        <div className="mt-6">
+          <Button
+            label={loading ? "Creating account..." : "Sign Up"}
+            onClick={sendRequest}
+            disabled={
+              !firstName || !lastName || !username || !password || loading
+            }
+          />
+        </div>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
-          Already have an account?{" "}
-          <Link to="/signin" className="text-green-600 font-medium">
-            Sign in
-          </Link>
-        </p>
+        <BottomWarning
+          label="Already have an account?"
+          buttonText="Sign in"
+          to="/signin"
+        />
       </div>
     </div>
   );
