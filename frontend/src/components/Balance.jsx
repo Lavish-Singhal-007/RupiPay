@@ -5,11 +5,11 @@ export const Balance = ({ value, refreshBalance, lastUpdated }) => {
   const [loading, setLoading] = useState(false);
   const [timeText, setTimeText] = useState("Updated just now");
 
-  const handleRefresh = async () => {
+  async function handleRefresh() {
     setLoading(true);
     await refreshBalance();
     setTimeout(() => setLoading(false), 600);
-  };
+  }
 
   useEffect(() => {
     const updateTime = () => {
@@ -39,7 +39,7 @@ export const Balance = ({ value, refreshBalance, lastUpdated }) => {
         </p>
 
         <h1 className="text-4xl font-bold mt-1">
-          ₹ {value?.toLocaleString("en-IN")}
+          {loading ? "Loading..." : `₹ ${value?.toLocaleString("en-IN")}`}
         </h1>
 
         <p className="text-xs opacity-70 mt-2">{timeText}</p>

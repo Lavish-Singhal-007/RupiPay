@@ -6,22 +6,23 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState("Loading...");
   const [name, setName] = useState("");
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
-  function fetchBalance() {
-    axios
-      .get("http://localhost:3000/api/v1/account/balance", {
+  async function fetchBalance() {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/account/balance",
+      {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
-      })
-      .then((response) => {
-        setBalance(response.data.balance);
-        setName(response.data.firstName);
-        setLastUpdated(new Date());
-      });
+      },
+    );
+
+    setBalance(response.data.balance);
+    setName(response.data.firstName);
+    setLastUpdated(new Date());
   }
 
   useEffect(() => {

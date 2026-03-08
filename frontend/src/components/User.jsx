@@ -22,7 +22,16 @@ export const User = ({ user }) => {
       {/* Right: Send Money Button */}
       <button
         onClick={() => {
-          navigate("/sendMoney?id=" + user._id + "&name=" + user.firstName);
+          navigate(
+            "/sendMoney?id=" +
+              user._id +
+              "&name=" +
+              user.firstName +
+              " " +
+              user.lastName +
+              "&username=" +
+              user.username,
+          );
         }}
         className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg transition"
       >
