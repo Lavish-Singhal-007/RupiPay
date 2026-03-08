@@ -1,17 +1,27 @@
-export const Appbar = () => {
+import logo from "../assets/Logo.svg";
+
+export function Appbar({ User }) {
   return (
-    <div className="shadow h-14 flex justify-between px-4">
-      <div className="flex flex-col justify-center h-full text-lg font-semibold">
-        Paytm App
+    <div className="bg-white shadow-sm h-16 flex justify-between items-center px-6">
+      {/* Left Side */}
+      <div className="flex items-center gap-3">
+        <img
+          src={logo}
+          alt="Rupi Pay Logo"
+          className="h-16 w-auto object-contain"
+        />
       </div>
 
-      <div className="flex">
-        <div className="flex flex-col justify-center h-full mr-4">Hello</div>
+      {/* Right Side */}
+      <div className="flex items-center gap-4">
+        <div className="text-gray-600 text-sm">
+          Hello, <span className="font-medium text-gray-800">{User}</span>
+        </div>
 
-        <div className="rounded-full h-10 w-10 bg-slate-200 flex justify-center mt-2 mr-2">
-          <div className="flex flex-col justify-center h-full text-xl">U</div>
+        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold">
+          {User[0]}
         </div>
       </div>
     </div>
   );
-};
+}

@@ -4,29 +4,30 @@ export const User = ({ user }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-between">
-      <div className="flex">
-        <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
-          <div className="flex flex-col justify-center h-full text-xl">
-            {user.firstName[0]}
-          </div>
+    <div className="flex justify-between items-center p-3 rounded-lg hover:bg-green-50 transition cursor-pointer">
+      {/* Left: Avatar + Name */}
+      <div className="flex items-center gap-3">
+        <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold text-lg">
+          {user.firstName[0]}
         </div>
 
-        <div className="flex flex-col justify-center h-full">
-          {user.firstName} {user.lastName}
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-800">
+            {user.firstName} {user.lastName}
+          </span>
+          <span className="text-sm text-gray-500">@{user.username}</span>
         </div>
       </div>
 
-      <div className="flex flex-col justify-center h-full">
-        <button
-          onClick={() => {
-            navigate("/sendMoney?id=" + user._id + "&name=" + user.firstName);
-          }}
-          className="bg-black text-white px-4 py-2 rounded-lg"
-        >
-          Send Money
-        </button>
-      </div>
+      {/* Right: Send Money Button */}
+      <button
+        onClick={() => {
+          navigate("/sendMoney?id=" + user._id + "&name=" + user.firstName);
+        }}
+        className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg transition"
+      >
+        Send Money
+      </button>
     </div>
   );
 };

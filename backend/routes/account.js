@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { authMiddleware } = require("../middleware");
-const { Account } = require("../db");
+const { User, Account } = require("../db");
 const mongoose = require("mongoose");
 
 router.get("/balance", authMiddleware, async (req, res) => {
@@ -10,12 +10,15 @@ router.get("/balance", authMiddleware, async (req, res) => {
       userId: req.userId,
     });
 
+    const user = await User.findById(req.userId);
+
     if (!account) {
       return res.status(404).json({
         message: "Account not found",
       });
     }
     return res.status(200).json({
+      firstName: user.firstName,
       balance: account.balance / 100,
     });
   } catch (error) {

@@ -170,7 +170,7 @@ router.get("/bulk", authMiddleware, async (req, res) => {
         { lastName: { $regex: filter, $options: "i" } },
       ],
       _id: { $ne: req.userId },
-    }).select("firstName lastName _id");
+    }).select("username firstName lastName _id");
 
     return res.status(200).json({
       users,
