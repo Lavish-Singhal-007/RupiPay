@@ -8,6 +8,7 @@ export default function SendMoney() {
   const navigate = useNavigate();
 
   const [amount, setAmount] = useState("");
+  const [pin, setPin] = useState("");
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -21,7 +22,8 @@ export default function SendMoney() {
   const numAmount = Number(amount);
   const hasInvalidInput = !amount || numAmount <= 0;
   const hasInsufficientBalance = balance !== null && numAmount > balance;
-  const isButtonDisabled = loading || hasInvalidInput || hasInsufficientBalance;
+  const isButtonDisabled =
+    loading || hasInvalidInput || hasInsufficientBalance || pin.length !== 4;
 
   async function fetchBalance() {
     try {
@@ -50,11 +52,12 @@ export default function SendMoney() {
       setLoading(true);
       setMessage("");
 
-      const res = await axios.post(
+      const result = await axios.post(
         "http://localhost:3000/api/v1/account/transfer",
         {
           to: id,
           amount: numAmount,
+          pin: pin,
         },
         {
           headers: {
@@ -63,7 +66,7 @@ export default function SendMoney() {
         },
       );
 
-      setMessage(res.data.message);
+      setMessage(result.data.message);
 
       setTimeout(() => {
         navigate("/dashboard");
@@ -184,6 +187,23 @@ export default function SendMoney() {
                 onChange={(e) => setAmount(e.target.value)}
                 className="bg-transparent outline-none w-full text-lg font-medium"
                 placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2 mt-3">
+            <label className="text-sm font-medium text-gray-600">
+              Enter T-PIN
+            </label>
+
+            <div className="flex items-center border-2 rounded-xl px-3 py-3 border-gray-100 focus-within:border-green-500 transition-colors">
+              <input
+                type="password"
+                maxLength={4}
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                className="bg-transparent outline-none w-full text-lg font-medium tracking-widest"
+                placeholder="••••"
               />
             </div>
           </div>

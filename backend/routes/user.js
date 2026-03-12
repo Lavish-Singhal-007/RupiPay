@@ -13,6 +13,7 @@ const signupSchema = z.object({
   password: z.string().min(6),
   firstName: z.string().max(50),
   lastName: z.string().max(50),
+  pin: z.string().length(4),
 });
 
 router.post("/signup", async (req, res) => {
@@ -25,7 +26,7 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    const { username, firstName, lastName, password } = parsed.data;
+    const { username, firstName, lastName, password, pin } = parsed.data;
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
@@ -34,12 +35,14 @@ router.post("/signup", async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPin = await bcrypt.hash(pin, 10);
 
     const user = await User.create({
       username,
       firstName,
       lastName,
       password: hashedPassword,
+      pin: hashedPin,
     });
 
     const randomBalance = Math.floor(Math.random() * 10000) + 1;

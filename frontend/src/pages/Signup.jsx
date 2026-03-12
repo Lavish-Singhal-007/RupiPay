@@ -15,6 +15,7 @@ export default function Signup() {
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,11 @@ export default function Signup() {
       return;
     }
 
+    if (pin.length !== 4) {
+      setError("PIN must be 4 digits");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
@@ -56,6 +62,7 @@ export default function Signup() {
           lastName,
           username,
           password,
+          pin,
         },
       );
 
@@ -100,6 +107,12 @@ export default function Signup() {
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          <InputBox
+            type="password"
+            placeholder="T-PIN (4 digits)"
+            onChange={(e) => setPin(e.target.value)}
+          />
         </div>
 
         {error && (
@@ -111,7 +124,13 @@ export default function Signup() {
             label={loading ? "Creating account..." : "Sign Up"}
             onClick={sendRequest}
             disabled={
-              !firstName || !lastName || !username || !password || loading
+              !firstName ||
+              !lastName ||
+              !username ||
+              !password ||
+              !pin ||
+              loading ||
+              pin.length !== 4
             }
           />
         </div>
