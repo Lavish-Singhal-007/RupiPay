@@ -35,10 +35,63 @@ const accountSchema = new mongoose.Schema({
   },
 });
 
+const transactionSchema = new mongoose.Schema(
+  {
+    transactionId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+
+    fromUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    toUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    amount: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    status: {
+      type: String,
+      enum: ["pending", "success", "failed"],
+      default: "pending",
+    },
+
+    type: {
+      type: String,
+      enum: ["transfer", "deposit", "withdrawal"],
+      default: "transfer",
+    },
+
+    note: {
+      type: String,
+      default: "",
+    },
+  },
+  { timestamps: true },
+);
+
+transactionSchema.index({ fromUserId: 1, createdAt: -1 });
+transactionSchema.index({ toUserId: 1, createdAt: -1 });
+transactionSchema.index({ transactionId: 1 });
+
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);
+const Transaction = mongoose.model("Transaction", transactionSchema);
 
 module.exports = {
   User,
   Account,
+  Transaction,
 };

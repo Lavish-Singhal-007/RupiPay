@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { authMiddleware } = require("../middleware");
-const { User, Account } = require("../db");
+const { User, Account, Transaction } = require("../db");
 const mongoose = require("mongoose");
 
 router.get("/balance", authMiddleware, async (req, res) => {
@@ -84,6 +84,15 @@ router.post("/transfer", authMiddleware, async (req, res) => {
       },
       { $inc: { balance: amount } },
     ).session(session);
+
+    const transactionId = "RP" + Date.now() + Math.floor(Math.random() * 1000);
+    await Transaction.create({
+      transactionId: transactionId,
+      fromUserId: req.userId,
+      toUserId: to,
+      amount: amount,
+      status: "success",
+    });
 
     await session.commitTransaction();
     return res.status(200).json({
