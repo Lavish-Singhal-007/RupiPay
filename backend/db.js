@@ -33,6 +33,18 @@ const accountSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  totalSent: {
+    type: Number,
+    default: 0,
+  },
+  totalReceived: {
+    type: Number,
+    default: 0,
+  },
+  totalTransactions: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const transactionSchema = new mongoose.Schema(
@@ -41,7 +53,6 @@ const transactionSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,
     },
 
     fromUserId: {
@@ -84,7 +95,6 @@ const transactionSchema = new mongoose.Schema(
 
 transactionSchema.index({ fromUserId: 1, createdAt: -1 });
 transactionSchema.index({ toUserId: 1, createdAt: -1 });
-transactionSchema.index({ transactionId: 1 });
 
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);

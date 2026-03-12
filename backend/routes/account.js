@@ -75,24 +75,31 @@ router.post("/transfer", authMiddleware, async (req, res) => {
       {
         userId: req.userId,
       },
-      { $inc: { balance: -amount } },
+      { $inc: { balance: -amount, totalSent: amount, totalTransactions: 1 } },
     ).session(session);
 
     await Account.updateOne(
       {
         userId: to,
       },
-      { $inc: { balance: amount } },
+      {
+        $inc: { balance: amount, totalReceived: amount, totalTransactions: 1 },
+      },
     ).session(session);
 
     const transactionId = "RP" + Date.now() + Math.floor(Math.random() * 1000);
-    await Transaction.create({
-      transactionId: transactionId,
-      fromUserId: req.userId,
-      toUserId: to,
-      amount: amount,
-      status: "success",
-    });
+    await Transaction.create(
+      [
+        {
+          transactionId: transactionId,
+          fromUserId: req.userId,
+          toUserId: to,
+          amount: amount,
+          status: "success",
+        },
+      ],
+      { session },
+    );
 
     await session.commitTransaction();
     return res.status(200).json({
