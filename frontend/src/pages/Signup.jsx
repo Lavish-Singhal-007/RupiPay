@@ -90,28 +90,33 @@ export default function Signup() {
           <InputBox
             placeholder="First Name"
             onChange={(e) => setFirstName(e.target.value)}
+            value={firstName}
           />
 
           <InputBox
             placeholder="Last Name"
             onChange={(e) => setLastName(e.target.value)}
+            value={lastName}
           />
 
           <InputBox
             placeholder="Email"
             onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
 
           <InputBox
             type="password"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
 
           <InputBox
             type="password"
             placeholder="T-PIN (4 digits)"
             onChange={(e) => setPin(e.target.value)}
+            value={pin}
           />
         </div>
 

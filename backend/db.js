@@ -77,23 +77,6 @@ const transactionSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
-
-    status: {
-      type: String,
-      enum: ["pending", "success", "failed"],
-      default: "pending",
-    },
-
-    type: {
-      type: String,
-      enum: ["transfer", "deposit", "withdrawal"],
-      default: "transfer",
-    },
-
-    note: {
-      type: String,
-      default: "",
-    },
   },
   { timestamps: true },
 );
@@ -101,12 +84,32 @@ const transactionSchema = new mongoose.Schema(
 transactionSchema.index({ fromUserId: 1, createdAt: -1 });
 transactionSchema.index({ toUserId: 1, createdAt: -1 });
 
+const sessionSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  token: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: "24h",
+  },
+});
+
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);
 const Transaction = mongoose.model("Transaction", transactionSchema);
+const Session = mongoose.model("Session", sessionSchema);
 
 module.exports = {
   User,
   Account,
   Transaction,
+  Session,
 };

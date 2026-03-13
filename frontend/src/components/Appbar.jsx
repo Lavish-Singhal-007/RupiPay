@@ -1,6 +1,8 @@
 import logo from "../assets/Logo.svg";
+import { useNavigate } from "react-router-dom";
 
 export function Appbar({ User }) {
+  const navigate = useNavigate();
   return (
     <div className="bg-white shadow-sm h-16 flex justify-between items-center px-6">
       {/* Left Side */}
@@ -18,8 +20,11 @@ export function Appbar({ User }) {
           Hello, <span className="font-medium text-gray-800">{User}</span>
         </div>
 
-        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold">
-          {User[0]}
+        <div
+          onClick={() => navigate("/profile")}
+          className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center cursor-pointer hover:ring-2 ring-green-500 transition-all"
+        >
+          <span className="text-green-700 font-bold">{User[0]}</span>
         </div>
       </div>
     </div>

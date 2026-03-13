@@ -55,12 +55,14 @@ export default function Signin() {
           <InputBox
             placeholder="Email"
             onChange={(e) => setUsername(e.target.value)}
+            value={username}
           />
 
           <InputBox
             type="password"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
           />
         </div>
 

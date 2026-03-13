@@ -113,7 +113,7 @@ export default function SendMoney() {
   }
 
   return (
-    <div className="min-h-screen bg-green-50">
+    <div className="min-h-screen bg-[#EEF8F1]">
       {/* Navbar */}
       <div className="bg-white shadow-sm h-16 flex justify-between items-center px-6">
         <div className="flex items-center gap-3">
@@ -134,7 +134,7 @@ export default function SendMoney() {
 
       {/* Main Card */}
       <div className="flex justify-center mt-20">
-        <div className="bg-white rounded-2xl shadow-xl p-8 w-[420px]">
+        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
           <h1 className="text-2xl font-bold text-center">Send Money</h1>
           <p className="text-sm text-gray-500 text-center mb-6">
             Transfer funds instantly & securely

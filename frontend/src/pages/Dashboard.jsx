@@ -86,6 +86,51 @@ export default function Dashboard() {
     fetchHistory();
   }, []);
 
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    let currYear = now.getFullYear();
+    let currMonth = now.getMonth();
+    let currDate = now.getDate();
+
+    const storedYear = date.getFullYear();
+    const storedMonth = date.getMonth();
+    const storedDate = date.getDate();
+
+    const t = date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    if (
+      currYear === storedYear &&
+      currMonth === storedMonth &&
+      currDate === storedDate
+    ) {
+      return `Today, ${t}`;
+    }
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    currDate = yesterday.getDate();
+    currMonth = yesterday.getMonth();
+    currYear = yesterday.getFullYear();
+
+    if (
+      currYear === storedYear &&
+      currMonth === storedMonth &&
+      currDate === storedDate
+    ) {
+      return `Yesterday, ${t}`;
+    }
+    const d = date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    return `${d} at ${t}`;
+  };
+
   return (
     <div className="bg-[#EEF8F1] min-h-screen">
       <Appbar User={name} />
@@ -180,7 +225,7 @@ export default function Dashboard() {
                   <div>
                     <p className="font-medium text-slate-800">{t.name}</p>
                     <p className="text-xs text-slate-500">
-                      {new Date(t.date).toLocaleDateString()}
+                      {formatDateTime(t.date)}
                     </p>
                   </div>
                   <span
@@ -188,7 +233,8 @@ export default function Dashboard() {
                       t.type === "sent" ? "text-red-500" : "text-green-500"
                     }
                   >
-                    {t.type === "sent" ? "-" : "+"}₹{t.amount}
+                    {t.type === "sent" ? "-" : "+"} ₹
+                    {t.amount?.toLocaleString("en-IN")}
                   </span>
                 </div>
               ))}

@@ -3,7 +3,7 @@ const { z } = require("zod");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
-const { User, Account } = require("../db");
+const { User, Account, Session } = require("../db");
 const { authMiddleware } = require("../middleware");
 const bcrypt = require("bcrypt");
 
@@ -58,7 +58,13 @@ router.post("/signup", async (req, res) => {
         userId: user._id,
       },
       JWT_SECRET,
+      { expiresIn: "24h" },
     );
+
+    await Session.create({
+      userId: user._id,
+      token: token,
+    });
 
     return res.status(201).json({
       message: "User created successfully",
@@ -93,12 +99,18 @@ router.post("/signin", async (req, res) => {
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
+        await Session.deleteMany({ userId: user._id });
         const token = jwt.sign(
           {
             userId: user._id,
           },
           JWT_SECRET,
+          { expiresIn: "24h" },
         );
+        await Session.create({
+          userId: user._id,
+          token: token,
+        });
         return res.status(200).json({
           token,
         });
@@ -116,12 +128,12 @@ router.post("/signin", async (req, res) => {
 });
 
 const updateSchema = z.object({
-  password: z.string().min(6).optional(),
+  password: z.string().optional(),
   firstName: z.string().max(50).optional(),
   lastName: z.string().max(50).optional(),
 });
 
-router.put("/", authMiddleware, async (req, res) => {
+router.put("/update", authMiddleware, async (req, res) => {
   try {
     const parsed = updateSchema.safeParse(req.body);
     if (!parsed.success) {
@@ -130,21 +142,17 @@ router.put("/", authMiddleware, async (req, res) => {
       });
     }
 
-    const updateData = parsed.data;
-    if (
-      updateData.firstName == undefined &&
-      updateData.lastName == undefined &&
-      updateData.password == undefined
-    ) {
-      return res.status(400).json({
-        message: "No fields provided to update",
-      });
-    }
+    const { firstName, lastName, password } = parsed.data;
 
-    if (updateData.password != undefined) {
-      const hashedPassword = await bcrypt.hash(updateData.password, 10);
+    const updateData = {};
+    updateData.firstName = firstName;
+    updateData.lastName = lastName;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
       updateData.password = hashedPassword;
     }
+
     await User.updateOne(
       {
         _id: req.userId,
@@ -183,6 +191,34 @@ router.get("/bulk", authMiddleware, async (req, res) => {
     return res.status(500).json({
       message: "Internal Server Error",
     });
+  }
+});
+
+router.get("/profile", authMiddleware, async (req, res) => {
+  const user = await User.findById(req.userId);
+  const account = await Account.findOne({ userId: req.userId });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    balance: account.balance / 100,
+  });
+});
+
+router.post("/logout", authMiddleware, async (req, res) => {
+  try {
+    await Session.deleteOne({ token: req.token });
+
+    res.status(200).json({
+      message: "Logged out successfully. Session invalidated.",
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error during logout" });
   }
 });
 
