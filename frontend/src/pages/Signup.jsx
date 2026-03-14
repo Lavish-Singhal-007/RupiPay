@@ -117,6 +117,7 @@ export default function Signup() {
             placeholder="T-PIN (4 digits)"
             onChange={(e) => setPin(e.target.value)}
             value={pin}
+            maxLength={4}
           />
         </div>
 

@@ -142,7 +142,7 @@ export default function Profile() {
           <InputBox
             label="New Password (optional)"
             type="password"
-            placeholder="Min 6 characters"
+            placeholder="New Password min 6 char (optional)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
