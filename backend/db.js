@@ -102,14 +102,33 @@ const sessionSchema = new mongoose.Schema({
   },
 });
 
+const MessageSchema = new mongoose.Schema({
+  senderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  receiverId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  type: { type: String, enum: ["TEXT", "PAYMENT"], required: true },
+  content: { type: String },
+  transactionId: { type: mongoose.Schema.Types.ObjectId, ref: "Transaction" }, // Used if type is PAYMENT
+  timestamp: { type: Date, default: Date.now },
+});
+
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);
 const Transaction = mongoose.model("Transaction", transactionSchema);
 const Session = mongoose.model("Session", sessionSchema);
+const Message = mongoose.model("Message", MessageSchema);
 
 module.exports = {
   User,
   Account,
   Transaction,
   Session,
+  Message,
 };

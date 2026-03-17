@@ -39,9 +39,11 @@ export const Users = () => {
       </div>
 
       <div>
-        {users.map((user) => (
-          <User key={user._id} user={user} />
-        ))}
+        <div className="max-h-[410px] overflow-y-auto pr-2 scroll-smooth scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent">
+          {users.map((user) => (
+            <User key={user._id} user={user} />
+          ))}
+        </div>
       </div>
     </div>
   );

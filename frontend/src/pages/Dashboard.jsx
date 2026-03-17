@@ -217,27 +217,29 @@ export default function Dashboard() {
                 </button>
               </div>
 
-              {(unlockHistory ? history : recentTransactions).map((t) => (
-                <div
-                  key={t.id}
-                  className="flex justify-between items-center py-2"
-                >
-                  <div>
-                    <p className="font-medium text-slate-800">{t.name}</p>
-                    <p className="text-xs text-slate-500">
-                      {formatDateTime(t.date)}
-                    </p>
-                  </div>
-                  <span
-                    className={
-                      t.type === "sent" ? "text-red-500" : "text-green-500"
-                    }
+              <div className="max-h-72 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-200">
+                {(unlockHistory ? history : recentTransactions).map((t) => (
+                  <div
+                    key={t.id}
+                    className="flex justify-between items-center py-2"
                   >
-                    {t.type === "sent" ? "-" : "+"} ₹
-                    {t.amount?.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              ))}
+                    <div>
+                      <p className="font-medium text-slate-800">{t.name}</p>
+                      <p className="text-xs text-slate-500">
+                        {formatDateTime(t.date)}
+                      </p>
+                    </div>
+                    <span
+                      className={
+                        t.type === "sent" ? "text-red-500" : "text-green-500"
+                      }
+                    >
+                      {t.type === "sent" ? "-" : "+"} ₹
+                      {t.amount?.toLocaleString("en-IN")}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

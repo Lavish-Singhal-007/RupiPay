@@ -76,8 +76,10 @@ export default function Signup() {
   }
 
   return (
-    <div className="h-screen bg-[#EEF8F1] flex justify-center items-center">
-      <div className="bg-white w-96 p-8 rounded-2xl shadow-xl border border-slate-200">
+    // <div className="h-screen bg-[#EEF8F1] flex justify-center items-center">
+    //   <div className="bg-white w-full max-w-lg p-10 rounded-3xl shadow-xl border border-slate-200"></div>
+    <div className="bg-[#EEF8F1] min-h-screen p-8">
+      <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8">
         <div className="flex justify-center mb-6">
           <img src="/Logo.svg" alt="Rupi Pay" className="h-16 translate-x-6" />
         </div>
@@ -87,38 +89,60 @@ export default function Signup() {
         <SubHeading label="Start sending money instantly" />
 
         <div className="space-y-4">
-          <InputBox
-            placeholder="First Name"
-            onChange={(e) => setFirstName(e.target.value)}
-            value={firstName}
-          />
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <p className="text-slate-700 font-medium mb-1 text-left">
+                First Name
+              </p>
+              <InputBox
+                placeholder="e.g. Rahul"
+                onChange={(e) => setFirstName(e.target.value)}
+                value={firstName}
+              />
+            </div>
+            <div className="flex-1">
+              <p className="text-slate-700 font-medium mb-1 text-left">
+                Last Name
+              </p>
+              <InputBox
+                placeholder="e.g. Sharma"
+                onChange={(e) => setLastName(e.target.value)}
+                value={lastName}
+              />
+            </div>
+          </div>
 
-          <InputBox
-            placeholder="Last Name"
-            onChange={(e) => setLastName(e.target.value)}
-            value={lastName}
-          />
+          <div>
+            <p className="text-slate-700 font-medium mb-1 text-left">Email</p>
+            <InputBox
+              placeholder="e.g. rahul@gmail.com"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
+          </div>
 
-          <InputBox
-            placeholder="Email"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-          />
+          <div>
+            <p className="text-slate-700 font-medium mb-1 text-left">
+              Password
+            </p>
+            <InputBox
+              type="password"
+              placeholder="Min. 6 characters"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </div>
 
-          <InputBox
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-
-          <InputBox
-            type="password"
-            placeholder="T-PIN (4 digits)"
-            onChange={(e) => setPin(e.target.value)}
-            value={pin}
-            maxLength={4}
-          />
+          <div>
+            <p className="text-slate-700 font-medium mb-1 text-left">T-PIN</p>
+            <InputBox
+              type="password"
+              placeholder="4 digit secret PIN"
+              onChange={(e) => setPin(e.target.value)}
+              value={pin}
+              maxLength={4}
+            />
+          </div>
         </div>
 
         {error && (

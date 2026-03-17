@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { authMiddleware } = require("../middleware");
-const { User, Account, Transaction } = require("../db");
+const { User, Account, Transaction, Message } = require("../db");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
@@ -99,7 +99,7 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     ).session(session);
 
     const transactionId = "RP" + Date.now() + Math.floor(Math.random() * 1000);
-    await Transaction.create(
+    const transaction = await Transaction.create(
       [
         {
           transactionId: transactionId,
@@ -113,6 +113,14 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     );
 
     await session.commitTransaction();
+
+    await Message.create({
+      senderId: req.userId,
+      receiverId: to,
+      type: "PAYMENT",
+      transactionId: transaction[0]._id,
+    });
+
     return res.status(200).json({
       message: "Transfer successful",
     });

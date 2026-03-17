@@ -123,29 +123,45 @@ export default function Profile() {
             Update Profile
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputBox
-              label="First Name"
-              placeholder="Enter first name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
+          <div className="space-y-6">
+            {/* Grid for Names - uses 2 columns on medium screens, 1 on mobile */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-slate-700 mb-1.5 ml-1 text-left">
+                  First Name
+                </label>
+                <InputBox
+                  placeholder="Enter first name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
 
-            <InputBox
-              label="Last Name"
-              placeholder="Enter last name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-slate-700 mb-1.5 ml-1 text-left">
+                  Last Name
+                </label>
+                <InputBox
+                  placeholder="Enter last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Password Section */}
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-slate-700 mb-1.5 ml-1 text-left">
+                New Password (optional)
+              </label>
+              <InputBox
+                type="password"
+                placeholder="Min. 6 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
-
-          <InputBox
-            label="New Password (optional)"
-            type="password"
-            placeholder="New Password min 6 char (optional)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
 
           <div className="pt-2">
             <Button

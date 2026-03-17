@@ -51,19 +51,29 @@ export default function Signin() {
 
         <SubHeading label="Enter your credentials to access your account" />
 
-        <div className="space-y-4">
-          <InputBox
-            placeholder="Email"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-          />
+        <div className="space-y-6">
+          <div>
+            <p className="text-sm font-semibold text-slate-700 mb-1.5 ml-1 text-left">
+              Email
+            </p>
+            <InputBox
+              placeholder="e.g. rahul@gmail.com"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
+          </div>
 
-          <InputBox
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
+          <div>
+            <p className="text-sm font-semibold text-slate-700 mb-1.5 ml-1 text-left">
+              Password
+            </p>
+            <InputBox
+              type="password"
+              placeholder="Enter your password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+          </div>
         </div>
 
         {error && (

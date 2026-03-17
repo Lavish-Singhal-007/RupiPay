@@ -4,7 +4,21 @@ export const User = ({ user }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-between items-center p-3 rounded-lg hover:bg-green-50 transition cursor-pointer">
+    <div
+      onClick={() => {
+        navigate(
+          "/chatWindow?id=" +
+            user._id +
+            "&name=" +
+            user.firstName +
+            " " +
+            user.lastName +
+            "&username=" +
+            user.username,
+        );
+      }}
+      className="flex justify-between items-center p-3 rounded-lg hover:bg-green-50 transition cursor-pointer"
+    >
       {/* Left: Avatar + Name */}
       <div className="flex items-center gap-3">
         <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold text-lg">
@@ -21,7 +35,8 @@ export const User = ({ user }) => {
 
       {/* Right: Send Money Button */}
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           navigate(
             "/sendMoney?id=" +
               user._id +
