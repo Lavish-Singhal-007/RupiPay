@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { PaymentCard } from "../components/PaymentCard";
 import { TextBubble } from "../components/TextBubble";
 import { useSearchParams } from "react-router-dom";
@@ -6,6 +6,13 @@ import { Send } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.svg";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000", {
+  auth: {
+    token: localStorage.getItem("token"),
+  },
+});
 
 export default function ChatWindow() {
   const navigate = useNavigate();
@@ -15,6 +22,21 @@ export default function ChatWindow() {
   const otherUserId = searchParams.get("id");
   const otherName = searchParams.get("name");
   const otherUsername = searchParams.get("username");
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    // Listen for incoming messages
+    socket.on("receive-message", (newMessage) => {
+      // Only add if it's from the person we are currently chatting with
+      if (newMessage.senderId === otherUserId) {
+        setMessages((prev) => [...prev, newMessage]);
+      }
+    });
+
+    return () => {
+      socket.off("receive-message"); // Cleanup on unmount
+    };
+  }, [otherUserId]);
 
   useEffect(() => {
     axios
@@ -33,11 +55,27 @@ export default function ChatWindow() {
     if (!input.trim()) return; // Don't send empty messages
 
     // Call your API or Socket logic here
-    console.log("Sending message:", input);
+    const messageData = {
+      receiverId: otherUserId,
+      content: input,
+      type: "TEXT",
+      timestamp: new Date(),
+    };
+
+    // 1. Send to Server via WebSocket
+    socket.emit("send-message", messageData);
+
+    // 2. Optimistic Update: Add to your own screen immediately
+    setMessages((prev) => [...prev, { ...messageData, _id: Date.now() }]);
 
     // Clear the input after sending
     setInput("");
   };
+
+  useEffect(() => {
+    // behavior: "smooth" makes it slide, "auto" makes it instant
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]); // This runs every time the messages array updates
 
   return (
     <div className="flex flex-col h-screen bg-[#EEF8F1]">
@@ -112,11 +150,17 @@ export default function ChatWindow() {
 
               {/* Message Content */}
               <div
-                className={`flex w-full ${isSender ? "justify-end" : "justify-start"}`}
+                className={`flex w-full mb-2 ${isSender ? "justify-end" : "justify-start"}`}
               >
-                <div className="max-w-[85%]">
+                <div
+                  className={`flex flex-col ${isSender ? "items-end" : "items-start"} max-w-[70%]`}
+                >
                   {msg.type === "TEXT" ? (
-                    <TextBubble content={msg.content} isSender={isSender} />
+                    <TextBubble
+                      content={msg.content}
+                      isSender={isSender}
+                      date={msg.timestamp}
+                    />
                   ) : (
                     <PaymentCard
                       amount={msg.transactionId?.amount / 100}
@@ -129,15 +173,12 @@ export default function ChatWindow() {
             </div>
           );
         })}
+        <div ref={scrollRef} />
       </div>
 
       {/* 2. FIXED BOTTOM ACTION BAR */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm border-t border-gray-100 flex items-center space-x-3">
-        {/* Pay Button */}
-        <form
-          onSubmit={handleSendMessage}
-          className="flex items-center w-full gap-3"
-        >
+      <footer className="bg-white border-t border-gray-100 p-4 pb-6">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
           <button
             type="button"
             className="bg-green-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-green-800 transition-all shadow-md active:scale-95"
@@ -155,24 +196,28 @@ export default function ChatWindow() {
             Pay
           </button>
 
-          {/* Input Field Area */}
-          <div className="flex-1 flex items-center bg-[#f0f4f9] rounded-full px-5 py-2.5 focus-within:bg-white focus-within:ring-1 focus-within:ring-green-200 transition-all">
+          <form
+            onSubmit={handleSendMessage}
+            className="flex-1 flex items-center bg-gray-100 rounded-2xl px-4 py-1 focus-within:bg-white focus-within:ring-2 focus-within:ring-green-100 transition-all border border-transparent focus-within:border-green-200"
+          >
             <input
               type="text"
-              placeholder="Message..."
-              className="bg-transparent flex-1 outline-none text-gray-800 text-sm"
+              placeholder="Write a message..."
+              className="bg-transparent flex-1 outline-none text-gray-800 text-sm py-3"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
+            <div className="h-4 w-[1px] bg-gray-300 mx-2"></div>
             <button
               type="submit"
-              className="ml-2 text-gray-500 hover:text-green-800 transition-colors"
+              className="text-green-600 disabled:text-gray-400 transition-colors shrink-0"
+              disabled={!input.trim()}
             >
               <Send size={20} />
             </button>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      </footer>
     </div>
   );
 }
