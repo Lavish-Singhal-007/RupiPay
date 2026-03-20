@@ -39,7 +39,7 @@ Ensures no double-spending or inconsistent states.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer     | Technology             |
 | --------- | ---------------------- |
@@ -74,7 +74,7 @@ RupiPay/
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 Make sure you have the following installed before running the project:
 
@@ -84,7 +84,7 @@ Make sure you have the following installed before running the project:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
 
@@ -143,7 +143,7 @@ Then open your browser and navigate to **http://localhost:5173**.
 
 ---
 
-## 🔐 Environment Variables Reference
+## Environment Variables Reference
 
 ### Backend (`/backend/.env`)
 
@@ -161,7 +161,7 @@ Then open your browser and navigate to **http://localhost:5173**.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! If you'd like to improve Rupi Pay:
 
@@ -173,10 +173,10 @@ Contributions are welcome! If you'd like to improve Rupi Pay:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
-<p align="center">Made with ❤️ by <a href="https://github.com/Lavish-Singhal-007">Lavish Singhal</a></p>
+<p align="center">Made by <a href="https://github.com/Lavish-Singhal-007">Lavish Singhal</a></p>
