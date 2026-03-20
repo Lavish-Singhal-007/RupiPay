@@ -183,7 +183,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-4 gap-4 text-center">
                 <button className="p-3 bg-green-100 rounded-lg">
                   💸
-                  <p className="text-xs mt-1">Send</p>
+                  <p className="text-xs mt-1">Bank Transfer</p>
                 </button>
 
                 <button className="p-3 bg-blue-100 rounded-lg">
