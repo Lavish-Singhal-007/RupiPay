@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { InputBox } from "../components/InputBox";
 import { Button } from "../components/Button";
+import { MyPaymentQR } from "../components/MyPaymentQR";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -117,8 +118,21 @@ export default function Profile() {
 
           <p className="text-gray-500">{user.username}</p>
         </div>
+
+        {/* Wallet Balance */}
+        <div className="space-y-4 border-t pt-6">
+          <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
+            <span className="text-gray-600">Wallet Balance</span>
+
+            <span className="font-bold text-green-600 text-lg">
+              ₹ {user.balance?.toLocaleString("en-IN")}
+            </span>
+          </div>
+        </div>
+
+        <MyPaymentQR username={user.username} />
         {/* Update Profile */}
-        <div className="space-y-4 border-t pt-6 mb-6">
+        <div className="space-y-4 border-t pt-6 mb-6 mt-7">
           <h3 className="text-lg font-semibold text-gray-700">
             Update Profile
           </h3>
@@ -185,20 +199,10 @@ export default function Profile() {
             )}
           </div>
         </div>
-        {/* Wallet Balance */}
-        <div className="space-y-4 border-t pt-6">
-          <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
-            <span className="text-gray-600">Wallet Balance</span>
-
-            <span className="font-bold text-green-600 text-lg">
-              ₹ {user.balance?.toLocaleString("en-IN")}
-            </span>
-          </div>
-        </div>
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full mt-12 py-3 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors border border-red-200"
+          className="mt-4 w-full py-3 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors border border-red-200"
         >
           Log Out
         </button>

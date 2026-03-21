@@ -76,7 +76,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     userSockets.delete(userId);
-    console.log(`User ${userId} disconnected.`);
   });
 });
 

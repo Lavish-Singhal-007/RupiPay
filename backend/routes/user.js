@@ -202,12 +202,31 @@ router.get("/profile", authMiddleware, async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  res.json({
+  res.status(200).json({
     firstName: user.firstName,
     lastName: user.lastName,
     username: user.username,
     balance: account.balance / 100,
   });
+});
+
+router.get("/info/:otherUserName", authMiddleware, async (req, res) => {
+  try {
+    const otherUserName = req.params.otherUserName;
+    const user = await User.findOne({ username: otherUserName }).select(
+      "firstName lastName username _id",
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({
+      userId: user._id,
+      name: user.firstName + " " + user.lastName,
+      username: user.username,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
+  }
 });
 
 router.post("/logout", authMiddleware, async (req, res) => {

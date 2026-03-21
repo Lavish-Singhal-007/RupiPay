@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import SendMoney from "./pages/SendMoney";
 import Profile from "./pages/Profile";
 import ChatWindow from "./pages/ChatWindow";
+import ScanToPay from "./pages/ScanToPay";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/sendMoney" element={<SendMoney />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/chatWindow" element={<ChatWindow />} />
+      <Route path="/scanToPay" element={<ScanToPay />} />
     </Routes>
   );
 }

@@ -1,7 +1,8 @@
 import { Appbar } from "../components/Appbar";
 import { Balance } from "../components/Balance";
 import { Users } from "../components/Users";
-
+import { useNavigate } from "react-router-dom";
+import { Scan } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [unlockHistory, setUnlockHistory] = useState(false);
+  const navigate = useNavigate();
 
   async function fetchBalance() {
     const response = await axios.get(
@@ -181,9 +183,14 @@ export default function Dashboard() {
               <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
 
               <div className="grid grid-cols-4 gap-4 text-center">
-                <button className="p-3 bg-green-100 rounded-lg">
-                  💸
-                  <p className="text-xs mt-1">Bank Transfer</p>
+                <button
+                  className="flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-2xl border border-green-200 transition-all active:scale-95 group"
+                  onClick={() => navigate("/scanToPay")}
+                >
+                  <Scan className="w-6 h-6 text-green-600 group-hover:scale-110 transition-transform" />
+                  <p className="text-[10px] font-bold mt-2 text-green-800 uppercase tracking-tighter">
+                    Scan to Pay
+                  </p>
                 </button>
 
                 <button className="p-3 bg-blue-100 rounded-lg">
