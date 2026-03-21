@@ -1,102 +1,184 @@
-# Rupi Pay — Backend API
+# Rupi Pay Backend
 
-The backend is the financial core of Rupi Pay. It manages the transaction ledger, enforces security at every layer, and drives real-time communication between clients via Socket.io.
+The backend handles authentication, wallet balances, transactions, user search, chat history, and real-time message delivery.
 
-> Back to [Main README](../README.md)
+## Responsibilities
 
----
+- User signup, signin, profile lookup, and profile updates
+- JWT validation and session enforcement
+- Wallet balance queries
+- Atomic money transfers
+- Transaction history and totals
+- Chat history persistence
+- Socket.io authentication and live message delivery
 
-## Technical Highlights
+## Stack
 
-### ACID Transactions
+- Node.js
+- Express
+- Mongoose
+- MongoDB
+- Socket.io
+- Zod
 
-Every P2P transfer is executed inside a **MongoDB Session** using `startSession()`. This guarantees atomicity — if any step fails mid-transfer (e.g., a network crash after debiting the sender), the session rolls back entirely. No money is ever lost or incorrectly doubled.
+## Important Files
 
-### Security Middleware
-
-Both auth and T-PIN validation logic live in a single **`middleware.js`** file:
-
-| Middleware       | Role                                                        |
-| ---------------- | ----------------------------------------------------------- |
-| `authMiddleware` | Verifies the JWT on every protected route before proceeding |
-
-### Real-time with Socket.io
-
-Socket.io manages a persistent connection between the server and all active clients. Events are emitted for incoming messages and payment confirmations, pushing updates live without any client-side polling.
-
-### Indexed User Search
-
-MongoDB indexes are applied on user lookup fields, keeping peer search queries fast and low-latency as the user base scales.
-
----
-
-## API Endpoints
-
-### Auth Routes — `/api/v1/user`
-
-| Method | Endpoint              | Auth Required | Description             |
-| ------ | --------------------- | ------------- | ----------------------- |
-| `POST` | `/api/v1/user/signup` | ❌            | Register a new user     |
-| `POST` | `/api/v1/user/signin` | ❌            | Login and receive a JWT |
-
-### Account Routes — `/api/v1/account`
-
-| Method | Endpoint                   | Auth Required | Description                           |
-| ------ | -------------------------- | ------------- | ------------------------------------- |
-| `GET`  | `/api/v1/account/balance`  | ✅            | Fetch the current wallet balance      |
-| `POST` | `/api/v1/account/transfer` | ✅ + T-PIN    | ACID-safe fund transfer between users |
-
----
-
-## Folder Structure
-
-```
+```text
 backend/
-├── routes/
-│   ├── account.js        # Account & transfer routes
-│   ├── chat.js           # Chat routes
-│   ├── transaction.js    # Transaction history routes
-│   ├── user.js           # Auth routes
-│   └── index.js          # Route aggregator
-├── config.js             # App configuration
-├── db.js                 # MongoDB connection
-├── middleware.js         # Auth & security middleware
-├── index.js              # Entry point, server + socket setup
-└── package.json
+├── config.js         # Environment variable loading
+├── db.js             # Mongoose connection + schemas/models
+├── index.js          # Express app + HTTP server + Socket.io
+├── middleware.js     # Auth middleware
+└── routes/
+    ├── account.js    # Balance and transfer routes
+    ├── chat.js       # Chat history and chat message routes
+    ├── index.js      # Route aggregator
+    ├── transaction.js
+    └── user.js       # Signup, signin, profile, search, logout
 ```
-
----
 
 ## Environment Variables
 
-Create a `.env` file in the `/backend` directory:
+Create `backend/.env`:
 
 ```env
-MONGO_URI=your-mongodb-connection-url
+MONGO_URI=your_mongodb_connection_string
 PORT=3000
-JWT_SECRET=your-jwt-secret-key
+JWT_SECRET=your_jwt_secret
 ```
 
-| Variable     | Description                 | Example             |
-| ------------ | --------------------------- | ------------------- |
-| `MONGO_URI`  | MongoDB connection string   | `mongodb+srv://...` |
-| `PORT`       | Port for the Express server | `3000`              |
-| `JWT_SECRET` | Secret key for JWT signing  | `mysupersecretkey`  |
-
----
-
-## Running the Backend
+## Install and Run
 
 ```bash
-# From the /backend directory
+cd backend
 npm install
 npm start
 ```
 
-Server runs at **http://localhost:3000** by default.
+The server runs on `http://localhost:3000` unless `PORT` is changed.
 
----
+## Data Model Overview
 
-## License
+### User
 
-This project is licensed under the [MIT License](../LICENSE).
+- `username`
+- `firstName`
+- `lastName`
+- `password`
+- `pin`
+
+Passwords and PINs are stored hashed before persistence.
+
+### Account
+
+- `userId`
+- `balance`
+- `totalSent`
+- `totalReceived`
+- `totalTransactions`
+
+All money values are stored in paise.
+
+### Transaction
+
+- `transactionId`
+- `fromUserId`
+- `toUserId`
+- `amount`
+- timestamps
+
+### Session
+
+- `userId`
+- `token`
+- `createdAt`
+
+Session documents expire automatically after 24 hours.
+
+### Message
+
+- `senderId`
+- `receiverId`
+- `type` (`TEXT` or `PAYMENT`)
+- `content`
+- `transactionId`
+- `timestamp`
+
+## API Routes
+
+Base prefix: `/api/v1`
+
+### User Routes
+
+Prefix: `/api/v1/user`
+
+- `POST /signup`
+- `POST /signin`
+- `PUT /update`
+- `GET /bulk`
+- `GET /profile`
+- `GET /info/:otherUserName`
+- `POST /logout`
+
+### Account Routes
+
+Prefix: `/api/v1/account`
+
+- `GET /balance`
+- `POST /transfer`
+
+### Transaction Routes
+
+Prefix: `/api/v1/transaction`
+
+- `GET /history`
+- `GET /recent`
+- `GET /sent`
+- `GET /received`
+- `GET /total`
+
+### Chat Routes
+
+Prefix: `/api/v1/chat`
+
+- `GET /history/:otherUserId`
+- `POST /send`
+
+## Auth Model
+
+- Protected routes use `authMiddleware`.
+- The middleware verifies the JWT and confirms the token still exists in the `Session` collection.
+- Logout removes the current session token.
+- Signin removes previous sessions for that user and creates a fresh one.
+
+## Transfers
+
+Money transfer is handled in [`backend/routes/account.js`](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/backend/routes/account.js).
+
+Transfer flow:
+
+1. Start a MongoDB session and transaction.
+2. Validate sender account and PIN.
+3. Validate receiver account and amount.
+4. Debit sender and credit receiver.
+5. Persist a `Transaction`.
+6. Commit the MongoDB transaction.
+7. Persist a `PAYMENT` message for chat history.
+
+This prevents half-completed balance updates.
+
+## Real-Time Messaging
+
+Socket.io is configured in [`backend/index.js`](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/backend/index.js).
+
+- Clients connect with a JWT in the socket auth payload.
+- The server maps `userId -> socket.id`.
+- `send-message` creates and stores a `TEXT` message.
+- If the receiver is connected, the server emits `receive-message` to that socket.
+
+## Current Implementation Notes
+
+- Socket.io CORS is hardcoded to `http://localhost:5173`.
+- The backend reads environment variables through `dotenv` in `config.js`.
+- Money is exposed to the frontend in rupees but stored internally in paise.
+- Payment chat updates are persisted after a transfer completes.

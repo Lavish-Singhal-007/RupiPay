@@ -1,111 +1,153 @@
-# Rupi Pay — Frontend
+# Rupi Pay Frontend
 
-A responsive, conversation-first React interface designed for high-speed financial interaction. The UI blurs the line between a chat app and a payment app — because in Rupi Pay, they are the same thing.
+The frontend is a React single-page app for authentication, wallet management, user discovery, chat, QR scanning, and money transfers.
 
-> Back to [Main README](../README.md)
+## Main Screens
 
----
+- `Signin.jsx`: login flow
+- `Signup.jsx`: registration flow with 4-digit transaction PIN
+- `Dashboard.jsx`: balance, stats, quick actions, user search, transaction activity
+- `ChatWindow.jsx`: chat history, live messaging, payment entry point
+- `SendMoney.jsx`: transfer form with quick amount buttons and PIN confirmation
+- `Profile.jsx`: profile details, update form, logout, QR code
+- `ScanToPay.jsx`: QR scanner that resolves a user and routes into payment flow
 
-## Features & Optimizations
+## Stack
 
-### Optimistic UI Updates
+- React 18
+- Vite
+- Tailwind CSS
+- Axios
+- React Router
+- Socket.io Client
+- `html5-qrcode`
+- `qrcode.react`
 
-Chat messages and payment status cards render instantly on screen without waiting for a server confirmation. This creates a zero-lag experience that feels native, not web-based.
+## Structure
 
-### Dynamic Chat Rendering
-
-The `<ChatWindow />` component uses conditional logic to determine what to render per message. A standard text message renders as a speech bubble; a payment event renders as a structured **Payment Status Card** — all within the same thread.
-
-### Search Debouncing
-
-The peer search bar waits for the user to stop typing before firing an API call. This prevents a flood of unnecessary requests and keeps the experience smooth.
-
-### Stateful Dashboard
-
-The wallet dashboard computes **Total Sent** and **Total Received** metrics in real time from the transaction history, keeping stats always in sync with the latest state.
-
----
-
-## Core Components
-
-| Component           | Responsibility                                                        |
-| ------------------- | --------------------------------------------------------------------- |
-| `<ChatWindow />`    | Renders mixed message types and manages Socket.io event listeners     |
-| `<TransferModal />` | Handles the secure payment flow — amount selection and T-PIN entry    |
-| `<WalletCard />`    | Displays the primary balance and triggers a balance refresh on demand |
-
----
-
-## Folder Structure
-
-```
+```text
 frontend/
+├── public/
 ├── src/
 │   ├── assets/
 │   ├── components/
 │   │   ├── Appbar.jsx
 │   │   ├── Balance.jsx
 │   │   ├── BottomWarning.jsx
+│   │   ├── Button.jsx
 │   │   ├── Heading.jsx
 │   │   ├── InputBox.jsx
+│   │   ├── MyPaymentQR.jsx
 │   │   ├── PaymentCard.jsx
 │   │   ├── SubHeading.jsx
 │   │   ├── TextBubble.jsx
 │   │   ├── User.jsx
 │   │   └── Users.jsx
 │   ├── pages/
-│   │   ├── ChatWindow.jsx
-│   │   ├── Dashboard.jsx
-│   │   ├── Profile.jsx
-│   │   ├── SendMoney.jsx
-│   │   ├── Signin.jsx
-│   │   └── Signup.jsx
 │   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-├── .env
-└── package.json
+│   ├── index.css
+│   └── main.jsx
+├── index.html
+├── postcss.config.js
+├── tailwind.config.js
+└── vite.config.js
 ```
 
----
-
-## Environment Variables
-
-Create a `.env` file in the `/frontend` directory:
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
-| Variable       | Description                 | Example                 |
-| -------------- | --------------------------- | ----------------------- |
-| `VITE_API_URL` | Base URL of the backend API | `http://localhost:3000` |
-
----
-
-## Running the Frontend
+## Install and Run
 
 ```bash
-# From the /frontend directory
+cd frontend
 npm install
 npm run dev
 ```
 
-Dev server runs at **http://localhost:5173** by default.
+Local dev server:
 
----
+- `http://localhost:5173`
 
-## Tech Stack
+## Routing
 
-| Tool         | Purpose                   |
-| ------------ | ------------------------- |
-| React.js     | UI framework              |
-| Tailwind CSS | Utility-first styling     |
-| Socket.io    | Real-time event handling  |
-| Axios        | HTTP client for API calls |
+Defined in [`frontend/src/App.jsx`](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/frontend/src/App.jsx):
 
----
+- `/`
+- `/signin`
+- `/signup`
+- `/dashboard`
+- `/sendMoney`
+- `/profile`
+- `/chatWindow`
+- `/scanToPay`
 
-## License
+## UI Flow Overview
 
-This project is licensed under the [MIT License](../LICENSE).
+### Authentication
+
+- Signin stores the returned JWT in `localStorage`.
+- Signup also stores the JWT and redirects to the dashboard.
+
+### Dashboard
+
+- Fetches current wallet balance
+- Fetches transaction totals
+- Fetches recent transactions and full history
+- Shows user search results
+- Links to QR scan and chat/payment flows
+
+### Chat
+
+- Loads chat history from the backend
+- Opens a Socket.io connection for real-time text messages
+- Renders text and payment messages in the same conversation
+- Provides direct navigation to the transfer screen
+
+### Payments
+
+- Payment can start from user search, chat, or QR scan
+- Transfer screen validates amount, available balance, and 4-digit PIN
+- Successful transfers redirect back to the dashboard
+
+### Profile
+
+- Shows user info and current balance
+- Generates a QR code using the username
+- Allows first name, last name, and password update
+- Supports logout
+
+## Component Roles
+
+- `Appbar.jsx`: top navigation bar and profile entry
+- `Balance.jsx`: wallet balance card and refresh action
+- `Users.jsx`: user search and list rendering
+- `User.jsx`: individual search result row and navigation actions
+- `TextBubble.jsx`: standard chat message UI
+- `PaymentCard.jsx`: payment event UI inside chat
+- `MyPaymentQR.jsx`: personal QR display
+- `InputBox.jsx`: reusable input with password visibility toggle
+
+## Backend Integration
+
+The current frontend calls the backend directly with hardcoded URLs such as:
+
+- `http://localhost:3000/api/v1/...`
+- `http://localhost:3000` for Socket.io
+
+That means the frontend currently expects the backend to be running locally on port `3000`.
+
+## Styling
+
+- Tailwind directives are defined in [`frontend/src/index.css`](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/frontend/src/index.css).
+- Vite is used for local development and production builds.
+- Assets in `src/assets` and `public` contain the Rupi Pay brand marks and icons.
+
+## Build
+
+```bash
+cd frontend
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```

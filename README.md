@@ -1,182 +1,151 @@
 # Rupi Pay
 
-> **Send money as easily as sending a message.**
+Rupi Pay is a full-stack peer-to-peer payments app that combines wallet transfers, chat, QR-based payments, and transaction history in a single product flow.
 
-Rupi Pay is a full-stack social P2P payment platform that merges real-time messaging with a secure financial engine. Users can chat, track their spending, and send money — all within a single conversation thread.
+The project is split into:
 
-## Features
+- `frontend/`: React + Vite + Tailwind client
+- `backend/`: Node.js + Express + MongoDB API with Socket.io
 
-- **Unified Chat & Pay** — Payment status cards are embedded directly in the chat thread, making transactions as social as a conversation.
-- **ACID Transactions** — MongoDB Sessions ensure every fund transfer is 100% atomic and consistent — no partial failures or balance mismatches.
-- **T-PIN Security** — A mandatory 4-digit Transaction PIN is required to authorize every outgoing payment.
-- **Real-time Synchronization** — Powered by Socket.io for instant message delivery and live balance updates.
-- **Wallet Dashboard** — View your total balance, sent/received statistics, and recent activity at a glance.
-- **Dynamic Peer Search** — Find users instantly by name or email.
-- **Live Transaction History** — A color-coded ledger tracking all credits and debits in real time.
+## What It Does
 
----
+- User signup, signin, logout, and profile updates
+- Wallet balance view with sent/received transaction stats
+- Search other users and start a chat
+- Send money directly or from inside a conversation
+- Generate a personal payment QR and scan another user's QR to pay
+- Real-time chat delivery with Socket.io
+- Transaction history, recent activity, and account totals
 
-## Transaction Safety
+## Stack
 
-All transfers are executed using MongoDB session-based transactions:
+- Frontend: React, Vite, Tailwind CSS, Axios, React Router, Socket.io Client
+- Backend: Node.js, Express, Mongoose, Socket.io, Zod
+- Database: MongoDB
+- Auth: JWT + persisted session records
 
-- Deduct from sender
-- Credit receiver
-- Commit only if both succeed
-- Otherwise rollback
+## Architecture Summary
 
-Ensures no double-spending or inconsistent states.
+- Authentication is token-based. Protected routes require `Authorization: Bearer <token>`.
+- User sessions are stored in MongoDB and invalidated on logout.
+- Account balances are stored in paise on the backend and exposed as rupees to the UI.
+- Transfers run inside MongoDB transactions to keep sender and receiver balances consistent.
+- Chat uses Socket.io for live delivery and MongoDB for chat history persistence.
+- Payment events are stored as chat messages of type `PAYMENT`, so transfers can appear inside conversations.
 
----
+## Repository Structure
 
-## Engineering Highlights
-
-- Implemented **ACID-compliant transactions** using MongoDB sessions to prevent race conditions and ensure balance consistency
-- Designed a **real-time event-driven architecture** with Socket.io for chat and payment synchronization
-- Built a **secure transaction pipeline** with T-PIN validation and JWT-based authentication
-- Structured backend using **modular MVC architecture** (routes, controllers, middleware)
-- Optimized user search using **debouncing and indexed queries**
-
----
-
-## Tech Stack
-
-| Layer     | Technology             |
-| --------- | ---------------------- |
-| Frontend  | React.js, Tailwind CSS |
-| Backend   | Node.js, Express.js    |
-| Database  | MongoDB (Mongoose)     |
-| Real-time | Socket.io              |
-| Auth      | JWT (JSON Web Tokens)  |
-
----
-
-## Project Structure
-
-```
-RupiPay/
-├── frontend/         # React + Tailwind client
+```text
+Rupi Pay/
+├── backend/
+│   ├── config.js
+│   ├── db.js
+│   ├── index.js
+│   ├── middleware.js
+│   ├── routes/
+│   │   ├── account.js
+│   │   ├── chat.js
+│   │   ├── index.js
+│   │   ├── transaction.js
+│   │   └── user.js
+│   └── README.md
+├── frontend/
+│   ├── public/
 │   ├── src/
+│   │   ├── assets/
 │   │   ├── components/
 │   │   ├── pages/
-│   │   └── ...
-│   └── package.json
-│
-├── backend/          # Node.js + Express server
-│   ├── routes/
-│   ├── models/
-│   ├── controllers/
-│   ├── middleware/
-│   └── package.json
-│
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   └── README.md
 └── README.md
 ```
 
----
-
 ## Prerequisites
 
-Make sure you have the following installed before running the project:
+- Node.js 18+
+- npm 9+
+- MongoDB instance or MongoDB Atlas connection string
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- [npm](https://www.npmjs.com/) v9 or higher
-- [MongoDB](https://www.mongodb.com/) (local instance or [MongoDB Atlas](https://www.mongodb.com/atlas))
+## Environment Variables
 
----
-
-## Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Lavish-Singhal-007/RupiPay.git
-cd RupiPay
-```
-
-### 2. Configure Backend Environment Variables
-
-Create a `.env` file inside the `/backend` directory:
+Create `backend/.env`:
 
 ```env
-MONGO_URI=your-mongodb-connection-url
+MONGO_URI=your_mongodb_connection_string
 PORT=3000
-JWT_SECRET=your-jwt-secret-key
+JWT_SECRET=your_jwt_secret
 ```
 
-### 3. Configure Frontend Environment Variables
+The frontend currently calls the backend at `http://localhost:3000` directly in the source code, so no frontend `.env` is required for the current implementation.
 
-Create a `.env` file inside the `/frontend` directory:
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
-### 4. Install Dependencies
+## Install
 
 ```bash
-# Install backend dependencies
 cd backend
 npm install
 
-# Install frontend dependencies
 cd ../frontend
 npm install
 ```
 
-### 5. Run the Project
+## Run Locally
 
-Open two terminal windows and run each service separately:
+Start the backend:
 
 ```bash
-# Terminal 1 — Start the backend server (runs on http://localhost:3000)
 cd backend
 npm start
 ```
 
+Start the frontend in a second terminal:
+
 ```bash
-# Terminal 2 — Start the frontend dev server (runs on http://localhost:5173)
 cd frontend
 npm run dev
 ```
 
-Then open your browser and navigate to **http://localhost:5173**.
+Default local URLs:
 
----
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3000`
 
-## Environment Variables Reference
+## Main Flows
 
-### Backend (`/backend/.env`)
+### Auth
 
-| Variable     | Description                 | Example             |
-| ------------ | --------------------------- | ------------------- |
-| `MONGO_URI`  | MongoDB connection string   | `mongodb+srv://...` |
-| `PORT`       | Port for the Express server | `3000`              |
-| `JWT_SECRET` | Secret key for JWT signing  | `mysupersecretkey`  |
+- Sign up with first name, last name, username, password, and 4-digit PIN
+- Sign in to receive a JWT
+- Logout invalidates the stored session token
 
-### Frontend (`/frontend/.env`)
+### Wallet
 
-| Variable       | Description                 | Example                 |
-| -------------- | --------------------------- | ----------------------- |
-| `VITE_API_URL` | Base URL of the backend API | `http://localhost:5173` |
+- View available balance
+- View total sent, total received, and total transaction count
+- Browse recent and full transaction history
 
----
+### Chat and Payments
 
-## Contributing
+- Search another user
+- Open a chat thread
+- Send text messages in real time
+- Send money from the chat or the dedicated send-money screen
+- Show payment activity as cards inside the conversation
 
-Contributions are welcome! If you'd like to improve Rupi Pay:
+### QR Payments
 
-1. Fork the repository
-2. Create a new branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a Pull Request
+- Each user has a QR code derived from their username
+- Scanning a QR resolves the user and opens the payment flow
 
----
+## Notes
 
-## License
+- Balances are stored as integers in paise internally.
+- The backend allows only one active persisted session per user after signin.
+- Socket.io CORS is configured for `http://localhost:5173`.
+- The backend README and frontend README contain area-specific details.
 
-This project is licensed under the [MIT License](./LICENSE).
+## Documentation
 
----
-
-<p align="center">Made by <a href="https://github.com/Lavish-Singhal-007">Lavish Singhal</a></p>
+- Backend guide: [backend/README.md](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/backend/README.md)
+- Frontend guide: [frontend/README.md](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/frontend/README.md)
