@@ -111,6 +111,58 @@ Default local URLs:
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:3000`
 
+## Screenshots
+
+Store README screenshots in `docs/screenshots/`.
+
+Suggested files:
+
+- `docs/screenshots/signin.png`
+- `docs/screenshots/signup.png`
+- `docs/screenshots/dashboard-overview.png`
+- `docs/screenshots/dashboard-transactions.png`
+- `docs/screenshots/chat-window.png`
+- `docs/screenshots/send-money.png`
+- `docs/screenshots/profile.png`
+- `docs/screenshots/profile-update.png`
+- `docs/screenshots/scan-to-pay.png`
+
+### Sign In
+
+![Sign In](docs/screenshots/signin.png)
+
+### Sign Up
+
+![Sign Up](docs/screenshots/signup.png)
+
+### Dashboard Overview
+
+![Dashboard Overview](docs/screenshots/dashboard-overview.png)
+
+### Dashboard Activity
+
+![Dashboard Activity](docs/screenshots/dashboard-transactions.png)
+
+### Chat Window
+
+![Chat Window](docs/screenshots/chat-window.png)
+
+### Send Money
+
+![Send Money](docs/screenshots/send-money.png)
+
+### Profile
+
+![Profile](docs/screenshots/profile.png)
+
+### Profile Update
+
+![Profile Update](docs/screenshots/profile-update.png)
+
+### Scan To Pay
+
+![Scan To Pay](docs/screenshots/scan-to-pay.png)
+
 ## Main Flows
 
 ### Auth

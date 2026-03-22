@@ -16,6 +16,10 @@ The backend handles authentication, wallet balances, transactions, user search, 
 
 - Node.js
 - Express
+- bcrypt
+- CORS
+- dotenv
+- JSON Web Tokens
 - Mongoose
 - MongoDB
 - Socket.io
@@ -33,7 +37,7 @@ backend/
     ├── account.js    # Balance and transfer routes
     ├── chat.js       # Chat history and chat message routes
     ├── index.js      # Route aggregator
-    ├── transaction.js
+    ├── transaction.js # Transaction history and totals
     └── user.js       # Signup, signin, profile, search, logout
 ```
 
