@@ -76,9 +76,14 @@ Create `backend/.env`:
 MONGO_URI=your_mongodb_connection_string
 PORT=3000
 JWT_SECRET=your_jwt_secret
+CLIENT_URL=http://localhost:5173
 ```
 
-The frontend currently calls the backend at `http://localhost:3000` directly in the source code, so no frontend `.env` is required for the current implementation.
+Create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
 
 ## Install
 
@@ -96,7 +101,7 @@ Start the backend:
 
 ```bash
 cd backend
-npm start
+node index.js
 ```
 
 Start the frontend in a second terminal:
@@ -194,7 +199,7 @@ Suggested files:
 
 - Balances are stored as integers in paise internally.
 - The backend allows only one active persisted session per user after signin.
-- Socket.io CORS is configured for `http://localhost:5173`.
+- Express and Socket.io CORS use `CLIENT_URL` from `backend/.env`.
 - The backend README and frontend README contain area-specific details.
 
 ## Documentation

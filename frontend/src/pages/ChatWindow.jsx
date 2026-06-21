@@ -7,8 +7,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.svg";
 import { io } from "socket.io-client";
+import { API_BASE_URL, API_V1_BASE_URL } from "../config";
 
-const socket = io("http://localhost:3000", {
+const socket = io(API_BASE_URL, {
   auth: {
     token: localStorage.getItem("token"),
   },
@@ -40,7 +41,7 @@ export default function ChatWindow() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/v1/chat/history/${otherUserId}`, {
+      .get(`${API_V1_BASE_URL}/chat/history/${otherUserId}`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },

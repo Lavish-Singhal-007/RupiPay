@@ -49,6 +49,7 @@ Create `backend/.env`:
 MONGO_URI=your_mongodb_connection_string
 PORT=3000
 JWT_SECRET=your_jwt_secret
+CLIENT_URL=http://localhost:5173
 ```
 
 ## Install and Run
@@ -182,7 +183,7 @@ Socket.io is configured in [`backend/index.js`](/Users/lavishsinghal/Desktop/Pro
 
 ## Current Implementation Notes
 
-- Socket.io CORS is hardcoded to `http://localhost:5173`.
+- Express and Socket.io CORS use `CLIENT_URL` from `.env`.
 - The backend reads environment variables through `dotenv` in `config.js`.
 - Money is exposed to the frontend in rupees but stored internally in paise.
 - Payment chat updates are persisted after a transfer completes.

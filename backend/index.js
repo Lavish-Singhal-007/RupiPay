@@ -1,23 +1,22 @@
 const express = require("express");
 const cors = require("cors");
-const { PORT } = require("./config");
+const { PORT, CLIENT_URL, JWT_SECRET } = require("./config");
 const http = require("http");
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("./config");
 const { Message } = require("./db");
 
 const mainRouter = require("./routes/index");
 
 const app = express();
-app.use(cors()); // enable CORS
+app.use(cors({ origin: CLIENT_URL })); // enable CORS
 app.use(express.json()); // body parser
 
 const server = http.createServer(app); // Wrap Express
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Your React URL
+    origin: CLIENT_URL,
     methods: ["GET", "POST"],
   },
 });

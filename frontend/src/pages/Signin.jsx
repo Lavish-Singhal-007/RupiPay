@@ -7,6 +7,7 @@ import { BottomWarning } from "../components/BottomWarning";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_V1_BASE_URL } from "../config";
 
 export default function Signin() {
   const [username, setUsername] = useState("");
@@ -22,13 +23,10 @@ export default function Signin() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/user/signin",
-        {
-          username,
-          password,
-        },
-      );
+      const response = await axios.post(`${API_V1_BASE_URL}/user/signin`, {
+        username,
+        password,
+      });
 
       localStorage.setItem("token", response.data.token);
 

@@ -7,6 +7,7 @@ import { BottomWarning } from "../components/BottomWarning";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_V1_BASE_URL } from "../config";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -55,16 +56,13 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/user/signup",
-        {
-          firstName,
-          lastName,
-          username,
-          password,
-          pin,
-        },
-      );
+      const response = await axios.post(`${API_V1_BASE_URL}/user/signup`, {
+        firstName,
+        lastName,
+        username,
+        password,
+        pin,
+      });
 
       localStorage.setItem("token", response.data.token);
       navigate("/dashboard");

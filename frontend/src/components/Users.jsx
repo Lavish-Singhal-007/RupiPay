@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { User } from "./User";
 import { Search } from "lucide-react";
+import { API_V1_BASE_URL } from "../config";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
@@ -9,11 +10,14 @@ export const Users = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/v1/user/bulk?filter=" + filter, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+      .get(
+        `${API_V1_BASE_URL}/user/bulk?filter=${encodeURIComponent(filter)}`,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         },
-      })
+      )
       .then((response) => {
         setUsers(response.data.users);
       });

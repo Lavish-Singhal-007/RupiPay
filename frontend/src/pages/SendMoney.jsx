@@ -2,6 +2,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import logo from "../assets/Logo.svg";
+import { API_V1_BASE_URL } from "../config";
 
 export default function SendMoney() {
   const [searchParams] = useSearchParams();
@@ -27,14 +28,11 @@ export default function SendMoney() {
 
   async function fetchBalance() {
     try {
-      const result = await axios.get(
-        "http://localhost:3000/api/v1/account/balance",
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+      const result = await axios.get(`${API_V1_BASE_URL}/account/balance`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
         },
-      );
+      });
       setBalance(result.data.balance);
     } catch (err) {
       console.error("Error fetching balance:", err);
@@ -53,7 +51,7 @@ export default function SendMoney() {
       setMessage("");
 
       const result = await axios.post(
-        "http://localhost:3000/api/v1/account/transfer",
+        `${API_V1_BASE_URL}/account/transfer`,
         {
           to: id,
           amount: numAmount,

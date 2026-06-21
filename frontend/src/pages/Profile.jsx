@@ -4,6 +4,7 @@ import axios from "axios";
 import { InputBox } from "../components/InputBox";
 import { Button } from "../components/Button";
 import { MyPaymentQR } from "../components/MyPaymentQR";
+import { API_V1_BASE_URL } from "../config";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -17,7 +18,7 @@ export default function Profile() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/v1/user/profile", {
+      .get(`${API_V1_BASE_URL}/user/profile`, {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
       .then((response) => {
@@ -31,7 +32,7 @@ export default function Profile() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/v1/user/logout",
+        `${API_V1_BASE_URL}/user/logout`,
         {},
         {
           headers: { Authorization: "Bearer " + localStorage.getItem("token") },
@@ -50,7 +51,7 @@ export default function Profile() {
     try {
       setLoading(true);
       const response = await axios.put(
-        "http://localhost:3000/api/v1/user/update",
+        `${API_V1_BASE_URL}/user/update`,
         {
           firstName,
           lastName,
@@ -72,12 +73,9 @@ export default function Profile() {
       setLoading(false);
     }
 
-    const updatedUser = await axios.get(
-      "http://localhost:3000/api/v1/user/profile",
-      {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      },
-    );
+    const updatedUser = await axios.get(`${API_V1_BASE_URL}/user/profile`, {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    });
     setUser(updatedUser.data);
   };
 

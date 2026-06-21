@@ -65,6 +65,14 @@ Local dev server:
 
 - `http://localhost:5173`
 
+## Environment Variables
+
+Create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
 ## Routing
 
 Defined in [`frontend/src/App.jsx`](/Users/lavishsinghal/Desktop/Projects/Rupi%20Pay/frontend/src/App.jsx):
@@ -126,12 +134,7 @@ Defined in [`frontend/src/App.jsx`](/Users/lavishsinghal/Desktop/Projects/Rupi%2
 
 ## Backend Integration
 
-The current frontend calls the backend directly with hardcoded URLs such as:
-
-- `http://localhost:3000/api/v1/...`
-- `http://localhost:3000` for Socket.io
-
-That means the frontend currently expects the backend to be running locally on port `3000`.
+The frontend reads `VITE_API_BASE_URL` from `.env` for both Axios API calls and the Socket.io connection.
 
 ## Styling
 

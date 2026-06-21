@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Scan } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { API_V1_BASE_URL } from "../config";
 
 export default function Dashboard() {
   const [balance, setBalance] = useState("Loading...");
@@ -19,14 +20,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   async function fetchBalance() {
-    const response = await axios.get(
-      "http://localhost:3000/api/v1/account/balance",
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+    const response = await axios.get(`${API_V1_BASE_URL}/account/balance`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
-    );
+    });
 
     setBalance(response.data.balance);
     setName(response.data.firstName);
@@ -38,14 +36,11 @@ export default function Dashboard() {
   }, []);
 
   async function fetchTotal() {
-    const response = await axios.get(
-      "http://localhost:3000/api/v1/transaction/total",
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+    const response = await axios.get(`${API_V1_BASE_URL}/transaction/total`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
-    );
+    });
 
     setTotalSent(response.data.moneySent);
     setTotalReceived(response.data.moneyReceived);
@@ -58,7 +53,7 @@ export default function Dashboard() {
 
   async function fetchRecentTransactions() {
     const response = await axios.get(
-      "http://localhost:3000/api/v1/transaction/recent",
+      `${API_V1_BASE_URL}/transaction/recent`,
       {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -74,7 +69,7 @@ export default function Dashboard() {
 
   async function fetchHistory() {
     const response = await axios.get(
-      "http://localhost:3000/api/v1/transaction/history",
+      `${API_V1_BASE_URL}/transaction/history`,
       {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),

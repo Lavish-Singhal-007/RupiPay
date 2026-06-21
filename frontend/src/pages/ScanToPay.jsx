@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_V1_BASE_URL } from "../config";
 
 export default function ScanToPay() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function ScanToPay() {
 
     async function findUser(decodedText) {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/user/info/${decodedText}`,
+        `${API_V1_BASE_URL}/user/info/${decodedText}`,
         {
           headers: { Authorization: "Bearer " + localStorage.getItem("token") },
         },
