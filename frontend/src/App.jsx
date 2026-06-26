@@ -1,3 +1,5 @@
+// Use of Vercel.json: "No matter what URL path the user asks for, just serve them the main index.html file."
+
 import { Routes, Route } from "react-router-dom";
 
 import Signup from "./pages/Signup";

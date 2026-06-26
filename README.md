@@ -7,6 +7,8 @@ The project is split into:
 - `frontend/`: React + Vite + Tailwind client
 - `backend/`: Node.js + Express + MongoDB API with Socket.io
 
+🔗 **Live demo:** [rupipay.vercel.app](https://rupipay.vercel.app/)
+
 ## What It Does
 
 - User signup, signin, logout, and profile updates
